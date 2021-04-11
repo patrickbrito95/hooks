@@ -1,7 +1,27 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 
-const Dropdown = ({ options, selected, onSelectedChange }) => {
+const Dropdown = ({ options, selected, onSelectedChange, label }) => {
   const [open, setOpen] = useState(false);
+  const ref = useRef();
+
+// Esse useEffect abaixo foi criado para quando clicarmos em qualquer lugar da tela, o dropdown recolher.
+// Esse método é chamado de Event Bubbling
+  useEffect(() => {
+    const onBodyClick = (event) => {
+      if(ref.current.contains(event.target)){
+        return;
+      }
+      setOpen(false)
+    };
+    document.body.addEventListener("click", onBodyClick, {
+      capture: true});
+
+      return () => {
+        document.body.removeEventListener("click", onBodyClick, {
+          capture: true,
+        });
+      };
+  }, []);
 
   const renderedOptions = options.map((option) => {
     if (option.value === selected.value) {
@@ -18,10 +38,12 @@ const Dropdown = ({ options, selected, onSelectedChange }) => {
       </div>
     );
   });
+
   return (
-    <div className="ui form">
+    // UseRef usado nessa div para referenciar qual div foi clicada
+    <div ref={ref} className="ui form">
       <div className="field">
-        <label className="label">Select a Color</label>
+        <label className="label">{label}</label>
 
         {/* LÓGICA IMPOSTA PARA CRIAR UM TOGGLE DE ABRIR E FECHAR O DROPDOWN ATRAVÉS DO USESTATE E TERNÁRIO MANUPULANDO CSS */}
         <div

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Accordion from "./Accordion";
 import Dropdown from "./Dropdown";
 import Search from "./Search";
+import Translate from './Translate'
 
 const items = [
   {
@@ -40,16 +41,21 @@ const options = [
 // Estamos chamando o Array de objetos 'items' dentro do componente 'Accordion' como props.
 const App = () => {
   const [selected, setSelected] = useState(options[0]);
+  const [showDropdown, setShowDropdown] = useState(true);
   return (
     <div className="ui container">
       <h1>Widgets</h1>
       <Accordion items={items} />
       <Search />
-      <Dropdown
+      <button class="ui button" onClick={() => setShowDropdown(!showDropdown)}>Toggle Button</button>
+      { showDropdown ? <Dropdown
+        label={`Escolha uma cor: `}
         selected={selected}
         onSelectedChange={setSelected}
         options={options}
-      />
+      /> : null
+      }
+      <Translate />
     </div>
   );
 };
